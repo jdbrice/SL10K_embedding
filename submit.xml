@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<job simulateSubmission="false">
+
+  <command>
+    echo "Starting the job"
+    ls
+    hostname
+    
+    cp -f __DAQ__ $SCRATCH/st_zerobias.daq
+
+    ./embed_ee_vtx.sh __NEVT__
+
+  </command>
+
+  <output fromScratch="*.root *.fzd *.log *.metafile" toURL="file:__OUT__/" />
+
+  <stdout URL="file:__CJOB__/job_$JOBID.out"/>
+  <stderr URL="file:__CJOB__/job_$JOBID.err"/>
+
+  <Generator>
+    <Location>__SCHED__</Location>
+  </Generator>
+
+  <SandBox installer="ZIP">
+  	<Package>
+  		<File>file:./starsim.C</File>
+  		<File>file:./bfcVtx.C</File>
+		<File>file:./bfcMixer_Tpx.C</File>
+  		<File>file:./embed_ee_vtx.sh</File>
+  	</Package>
+  </SandBox>
+
+  <ResourceUsage>
+    <Times>
+      <MinWallTime>2</MinWallTime>
+      <MaxWallTime>4</MaxWallTime>
+		</Times>
+  </ResourceUsage>
+
+
+
+
+
+
+
+
+
+
+
+
+</job>
+
