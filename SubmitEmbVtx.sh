@@ -14,9 +14,9 @@ basedir="/star/u/jdb/work/upc_dielectron/embed/"
 jobdir="/star/data03/pwg/jdb/upc/output/$prod"
 
 #macros and StarlightSelector
-bfc="bfcMixer_Tpx.C"
+bfc="bfcVtx.C"
 xml="submit.xml"
-script="embed_ee.sh"
+script="embed_ee_vtx.sh"
 
 #-- end of configuration --
 
