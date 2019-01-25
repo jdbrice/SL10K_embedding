@@ -1,13 +1,13 @@
 #!/bin/bash
 
-prod="ee_vtx_03"
+prod="ee_vfmce_gg_01"
 
 #list of daq files
 daqlist="daqlist_nevt.txt"
 
 #first job and number of jobs, at most the number of daq files
 start=0
-njobs=17
+njobs=38
 
 #base directory for production macros and jobs working directory
 basedir="/star/u/jdb/work/upc_dielectron/embed/"
@@ -40,6 +40,7 @@ do
   #daq input and number of events
   daqname=$(echo $daqline | awk '{print $1}')
   nevt=$(echo $daqline | awk '{print $2}')
+  #nevt=10
   echo $daqname
   echo "Number of events: "$nevt
 
