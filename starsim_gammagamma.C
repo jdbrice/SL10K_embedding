@@ -52,7 +52,7 @@ void trig( Int_t n=1 )
 
 		W.SetPtEtaPhiM( sqrt( fPt2->GetRandom() ) , r.Uniform(-1, 1), r.Uniform(-TMath::Pi(), TMath::Pi()), fMass->GetRandom() );
 
-		event.SetDecay(W, 2, masses);
+		eventPS.SetDecay(W, 2, masses);
 
         Double_t weight = eventPS.Generate();
       
@@ -158,10 +158,10 @@ void starsim_gammagamma( Int_t nevents=1 )
 
   etaDist = new TF1("etaDist","-TMath::Erf(x+2.6)*TMath::Erf(x-2.6)",-0.8,+0.8);
 
-   TF1 * fMass = new TF1( "fmass", "pow(x, -3.5)" );
+   fMass = new TF1( "fmass", "pow(x, -3.5)" );
    fMass->SetRange( 0.4, 3.0 );
 
-   TF1 * fPt2 = new TF1("fpt2", "[0] * exp(  [1]*x )");
+   fPt2 = new TF1("fpt2", "[0] * exp(  [1]*x )");
    fPt2->SetParameter( 0, 1412.5 );
    fPt2->SetParameter( 1, -689.31566 );
    fPt2->SetRange( 0, 0.01 );

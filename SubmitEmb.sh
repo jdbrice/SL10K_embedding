@@ -1,6 +1,6 @@
 #!/bin/bash
 
-prod="ee_vfmce_gg_01"
+prod="ee_vfmce_gg_02"
 
 #list of daq files
 daqlist="daqlist_nevt.txt"
@@ -17,6 +17,7 @@ jobdir="/star/data03/pwg/jdb/upc/output/$prod"
 bfc="bfcMixer_Tpx.C"
 xml="submit.xml"
 script="embed_ee.sh"
+ss="starsim_gammagamma.C"
 
 #-- end of configuration --
 
@@ -65,7 +66,7 @@ do
   cp $bfc $cjob"/"$bfc
   cp $script $cjob"/"$script
   #copy starsim configuration
-  cp "starsim.C" $cjob"/starsim.C"
+  cp $ss $cjob"/"$ss
 
   #copy scheduler xml file and make substitutions
   cat $xml | sed "s/__NEVT__/$nevt/g"\

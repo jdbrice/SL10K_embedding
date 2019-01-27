@@ -25,6 +25,7 @@
   <SandBox installer="ZIP">
   	<Package>
   		<File>file:./starsim.C</File>
+		<File>file:./starsim_gammagamma.C</File>
   		<File>file:./bfcVtx.C</File>
 		<File>file:./bfcMixer_Tpx.C</File>
   		<File>file:./__SCRIPT__</File>
