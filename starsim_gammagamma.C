@@ -100,7 +100,7 @@ void Kinematics()
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-void starsim_gammagamma( Int_t nevents=1 )
+void starsim_gammagamma( Int_t nevents=1, Int_t rngSeed = 234234 )
 { 
 
   gROOT->ProcessLine(".L bfc.C");
@@ -117,7 +117,14 @@ void starsim_gammagamma( Int_t nevents=1 )
 
   gSystem->Load( "libMathMore.so"   );  
   gSystem->Load( "xgeometry.so"     );
-  
+ 
+  // Setup RNG seed and map all ROOT TRandom here
+  r.SetSeed(rngSeed);
+  gRandom->SetSeed(rngSeed);
+  StarRandom::seed( rngSeed );
+  StarRandom::capture();
+
+ 
   //
   // Create the primary event generator and insert it
   // before the geant maker
@@ -165,7 +172,7 @@ void starsim_gammagamma( Int_t nevents=1 )
    fPt2->SetParameter( 0, 1412.5 );
    fPt2->SetParameter( 1, -689.31566 );
    fPt2->SetRange( 0, 0.01 );
-	cout << "hello" << endl;
+   cout << "hello" << endl;
   //
   // Trigger on nevents
   //

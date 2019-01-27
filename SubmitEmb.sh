@@ -1,13 +1,13 @@
 #!/bin/bash
 
-prod="ee_vfmce_gg_02"
+prod="ee_vfmce_gg_03"
 
 #list of daq files
 daqlist="daqlist_nevt.txt"
 
 #first job and number of jobs, at most the number of daq files
 start=0
-njobs=38
+njobs=500
 
 #base directory for production macros and jobs working directory
 basedir="/star/u/jdb/work/upc_dielectron/embed/"
