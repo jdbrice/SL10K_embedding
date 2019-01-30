@@ -8,7 +8,7 @@
 		hostname
 		
 		cp -f __DAQ__ $SCRATCH/st_zerobias.daq
-		cp -f /star/data03/pwg/jdb/upc/starlight ./starlight.root
+		cp -f /star/data03/pwg/jdb/upc/starlight.root ./starlight.root
 
 		./__SCRIPT__ __NEVT__
 
