@@ -3,6 +3,7 @@
 // To use it do
 //  root4star starsim.C
 
+
 class St_geant_Maker;
 St_geant_Maker *geant_maker = 0;
 
@@ -18,27 +19,28 @@ StarKinematics *kinematics = 0;
 TF1 *ptDist  = 0;
 TF1 *etaDist = 0;
 
-TGenPhaseSpace eventPS;
 TRandom3 r;
+TLorentzVector *lv1 ,*lv2;
+int nPairs = 0;
 
-TF1 * fMass = 0;
-TF1 * fPt2 = 0;
-Double_t masses[2] = { 0.0005109989461, 0.0005109989461} ;
+// class StBFChain;
+// StBFChain * chain = 0;
+
 
 
 // ----------------------------------------------------------------------------
 void geometry( TString tag, Bool_t agml=true )
 {
-  TString cmd = "DETP GEOM "; cmd += tag;
-  if ( !geant_maker ) geant_maker = (St_geant_Maker *)chain->GetMaker("geant");
-  geant_maker -> LoadGeometry(cmd);
-  //  if ( agml ) command("gexec $STAR_LIB/libxgeometry.so");
+	TString cmd = "DETP GEOM "; cmd += tag;
+	if ( !geant_maker ) geant_maker = (St_geant_Maker *)chain->GetMaker("geant");
+	geant_maker -> LoadGeometry(cmd);
+	//  if ( agml ) command("gexec $STAR_LIB/libxgeometry.so");
 }
 // ----------------------------------------------------------------------------
 void command( TString cmd )
 {
-  if ( !geant_maker ) geant_maker = (St_geant_Maker *)chain->GetMaker("geant");
-  geant_maker -> Do( cmd );
+	if ( !geant_maker ) geant_maker = (St_geant_Maker *)chain->GetMaker("geant");
+	geant_maker -> Do( cmd );
 }
 // ----------------------------------------------------------------------------
 void trig( Int_t n=1 )
@@ -50,15 +52,10 @@ void trig( Int_t n=1 )
 		// Clear the chain from the previous event
 		chain->Clear();
 
-		W.SetPtEtaPhiM( sqrt( fPt2->GetRandom() ) , r.Uniform(-1, 1), r.Uniform(-TMath::Pi(), TMath::Pi()), fMass->GetRandom() );
+		int iEntry = r.Integer( nPairs );
+		l1 = lv1[iEntry];
+		l2 = lv2[iEntry];
 
-		eventPS.SetDecay(W, 2, masses);
-
-        Double_t weight = eventPS.Generate();
-      
-        TLorentzVector l1    = *(eventPS.GetDecay(0));
-        TLorentzVector l2    = *(eventPS.GetDecay(1));
-		
 		StarGenParticle *ele = kinematics->AddParticle( "e-" );
 		
 		ele->SetPx( l1.Px() );
@@ -69,14 +66,12 @@ void trig( Int_t n=1 )
 		StarGenParticle *pos = kinematics->AddParticle( "e+" );
 		
 		pos->SetPx( l2.Px() );
-        pos->SetPy( l2.Py() );
-        pos->SetPz( l2.Pz() );
-        pos->SetMass( 0.0005109989461 );
+		pos->SetPy( l2.Py() );
+		pos->SetPz( l2.Pz() );
+		pos->SetMass( 0.0005109989461 );
 
-
-		//kinematics->Kine( 1, "e-", 0.100, 1.0, -1.0, +1.0 );
-		//kinematics->Kine( 1, "e+", 0.100, 1.0, -1.0, +1.0 );
-
+		TLorentzVector W = l1 + l2;
+		cout << "mass = " << W.M() << ", pT = " << W.Pt() << endl;
 
 		// Generate the event
 		chain->Make();
@@ -90,12 +85,12 @@ void trig( Int_t n=1 )
 // ----------------------------------------------------------------------------
 void Kinematics()
 {
-  
-  //  gSystem->Load( "libStarGeneratorPoolPythia6_4_23.so" );
-  gSystem->Load( "libKinematics.so");
-  kinematics = new StarKinematics();
-    
-  primary->AddGenerator(kinematics);
+	
+	//  gSystem->Load( "libStarGeneratorPoolPythia6_4_23.so" );
+	gSystem->Load( "libKinematics.so");
+	kinematics = new StarKinematics();
+		
+	primary->AddGenerator(kinematics);
 }
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -103,80 +98,88 @@ void Kinematics()
 void starsim_gammagamma( Int_t nevents=1, Int_t rngSeed = 234234 )
 { 
 
-  gROOT->ProcessLine(".L bfc.C");
-  {
-    TString simple = "y2010 geant gstar";
-    bfc(0, simple );
-  }
+	// Read in the STARLight events
+	TFile *f = new TFile( "starlight.root" );
+	TTree *t = (TTree*)f->Get("PairDst");
+	// do this up here to make sure it doesnt mess up the active file below
 
-  gSystem->Load( "libVMC.so");
+	gROOT->ProcessLine(".L bfc.C");
+	{
+		TString simple = "y2010 geant gstar";
+		bfc(0, simple );
+	}
 
-  gSystem->Load( "StarGeneratorUtil.so" );
-  gSystem->Load( "StarGeneratorEvent.so" );
-  gSystem->Load( "StarGeneratorBase.so" );
+	gSystem->Load( "libVMC.so");
 
-  gSystem->Load( "libMathMore.so"   );  
-  gSystem->Load( "xgeometry.so"     );
+	gSystem->Load( "StarGeneratorUtil.so" );
+	gSystem->Load( "StarGeneratorEvent.so" );
+	gSystem->Load( "StarGeneratorBase.so" );
+
+	gSystem->Load( "libMathMore.so"   );  
+	gSystem->Load( "xgeometry.so"     );
  
-  // Setup RNG seed and map all ROOT TRandom here
-  r.SetSeed(rngSeed);
-  gRandom->SetSeed(rngSeed);
-  StarRandom::seed( rngSeed );
-  StarRandom::capture();
+	// Setup RNG seed and map all ROOT TRandom here
+	r.SetSeed(rngSeed);
+	gRandom->SetSeed(rngSeed);
+	StarRandom::seed( rngSeed );
+	StarRandom::capture();
 
  
-  //
-  // Create the primary event generator and insert it
-  // before the geant maker
-  //
-  //  StarPrimaryMaker *
-  primary = new StarPrimaryMaker();
-  {
-    primary -> SetFileName( "kinematics.starsim.root");
-    chain -> AddBefore( "geant", primary );
-  }
+	//
+	// Create the primary event generator and insert it
+	// before the geant maker
+	//
+	//  StarPrimaryMaker *
+	primary = new StarPrimaryMaker();
+	{
+		primary -> SetFileName( "kinematics.starsim.root");
+		chain -> AddBefore( "geant", primary );
+	}
 
-  Kinematics();
-  
-  primary->SetVertex( 0.0, 0.0, 0.0 );
-  primary->SetSigma( 0.01, 0.01, 35.0 );  
+	Kinematics();
+	
+	primary->SetVertex( 0.0, 0.0, 0.0 );
+	primary->SetSigma( 0.01, 0.01, 35.0 );  
 
-  //
-  // Initialize primary event generator and all sub makers
-  //
-  primary -> Init();
+	//
+	// Initialize primary event generator and all sub makers
+	//
+	primary -> Init();
 
-  //
-  // Setup geometry and set starsim to use agusread for input
-  //
-  geometry("y2010");
-  command("gkine -4 0");
-  command("gfile o pythia6.starsim.fzd");
-  
+	//
+	// Setup geometry and set starsim to use agusread for input
+	//
+	geometry("y2010");
+	command("gkine -4 0");
+	command("gfile o pythia6.starsim.fzd");
+	
+	
 
-  //
-  // Setup PT and ETA distributions
-  //
+	// copy out the tree info
+	t->SetEstimate( t->GetEntries() + 1 );
+	t->Draw( "d1_mPt : d1_mEta : d1_mPhi", "", "goff", t->GetEntries(), 0 );
+	TLorentzVector l1, l2;
 
-  Double_t pt0 = 3.0;
-  ptDist = new TF1("ptDist","(x/[0])/(1+(x/[0])^2)^6",0.0,10.0);
-  ptDist->SetParameter(0, pt0);
-  ptDist->Draw();
+	lv1 = new TLorentzVector[500000];
+	lv2 = new TLorentzVector[500000];
 
-  etaDist = new TF1("etaDist","-TMath::Erf(x+2.6)*TMath::Erf(x-2.6)",-0.8,+0.8);
+	for ( int i = 0; i < t->GetSelectedRows(); i++ ) {
+		l1.SetPtEtaPhiM( t->GetVal(0)[i], t->GetVal(1)[i], t->GetVal(2)[i], 0.0005109989461 );
+		lv1[i] = l1;
+	}
+	nPairs = t->GetSelectedRows();
 
-   fMass = new TF1( "fmass", "pow(x, -3.5)" );
-   fMass->SetRange( 0.4, 3.0 );
 
-   fPt2 = new TF1("fpt2", "[0] * exp(  [1]*x )");
-   fPt2->SetParameter( 0, 1412.5 );
-   fPt2->SetParameter( 1, -689.31566 );
-   fPt2->SetRange( 0, 0.01 );
-   cout << "hello" << endl;
-  //
-  // Trigger on nevents
-  //
-  trig( nevents );
+	t->Draw( "d2_mPt : d2_mEta : d2_mPhi", "", "goff", t->GetEntries(), 0 );
+	for ( int i = 0; i < t->GetSelectedRows(); i++ ) {
+		l2.SetPtEtaPhiM( t->GetVal(0)[i], t->GetVal(1)[i], t->GetVal(2)[i], 0.0005109989461 );
+		lv2[i] = l2;
+	}
+
+	//
+	// Trigger on nevents
+	//
+	trig( nevents );
 
 }
 // ----------------------------------------------------------------------------

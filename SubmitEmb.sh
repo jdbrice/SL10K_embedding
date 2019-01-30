@@ -1,6 +1,6 @@
 #!/bin/bash
 
-prod="ee_vfmce_gg_03"
+prod="ee_vfmce_gg_10"
 
 #list of daq files
 daqlist="daqlist_nevt.txt"
@@ -75,7 +75,7 @@ do
            | sed "s%__CJOB__%$cjob%g"\
            | sed "s%__GEOM__%$geom%g"\
            | sed "s%__SCHED__%$sched%g"\
-		   | sed "s%__SCRIPT__%$script%g" > $cjob"/"$xml
+           | sed "s%__SCRIPT__%$script%g" > $cjob"/"$xml
 
   #submit the job
   cd $cjob

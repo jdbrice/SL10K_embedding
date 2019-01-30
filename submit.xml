@@ -2,53 +2,43 @@
 
 <job simulateSubmission="false">
 
-  <command>
-    echo "Starting the job"
-    ls
-    hostname
-    
-    cp -f __DAQ__ $SCRATCH/st_zerobias.daq
+	<command>
+		echo "Starting the job"
+		ls
+		hostname
+		
+		cp -f __DAQ__ $SCRATCH/st_zerobias.daq
+		cp -f /star/data03/pwg/jdb/upc/starlight ./starlight.root
 
-    ./__SCRIPT__ __NEVT__
+		./__SCRIPT__ __NEVT__
 
-  </command>
+	</command>
 
-  <output fromScratch="*.root *.fzd *.log *.metafile" toURL="file:__OUT__/" />
+	<output fromScratch="*.root *.fzd *.log *.metafile" toURL="file:__OUT__/" />
 
-  <stdout URL="file:__CJOB__/job_$JOBID.out"/>
-  <stderr URL="file:__CJOB__/job_$JOBID.err"/>
+	<stdout URL="file:__CJOB__/job_$JOBID.out"/>
+	<stderr URL="file:__CJOB__/job_$JOBID.err"/>
 
-  <Generator>
-    <Location>__SCHED__</Location>
-  </Generator>
+	<Generator>
+		<Location>__SCHED__</Location>
+	</Generator>
 
-  <SandBox installer="ZIP">
-  	<Package>
-  		<File>file:./starsim.C</File>
-		<File>file:./starsim_gammagamma.C</File>
-  		<File>file:./bfcVtx.C</File>
-		<File>file:./bfcMixer_Tpx.C</File>
-  		<File>file:./__SCRIPT__</File>
-  	</Package>
-  </SandBox>
+	<SandBox installer="ZIP">
+		<Package>
+			<File>file:./starsim.C</File>
+			<File>file:./starsim_gammagamma.C</File>
+			<File>file:./bfcVtx.C</File>
+			<File>file:./bfcMixer_Tpx.C</File>
+			<File>file:./__SCRIPT__</File>
+		</Package>
+	</SandBox>
 
-  <ResourceUsage>
-    <Times>
-      <MinWallTime>2</MinWallTime>
-      <MaxWallTime>4</MaxWallTime>
+	<ResourceUsage>
+		<Times>
+			<MinWallTime>2</MinWallTime>
+			<MaxWallTime>4</MaxWallTime>
 		</Times>
-  </ResourceUsage>
-
-
-
-
-
-
-
-
-
-
-
+	</ResourceUsage>
 
 </job>
 

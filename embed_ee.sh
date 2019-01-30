@@ -5,8 +5,9 @@ set nEvts=$1
 echo "Running on $nEvts Events"
 echo "#################### STARSIM #######################"
 starver SL16d
-trandom="$(od -vAn -N4 -tu4 < /dev/urandom | tr -d '[:space:]')"
-root4star -b -q -l 'starsim_gammagamma.C('"$nEvts"','"$trandom"')' >& starsim.log
+set myrandom=`od -vAn -N4 -tu4 < /dev/urandom | tr -d '[:space:]'`
+echo "root4star -b -q -l 'starsim_gammagamma.C($nEvts,$myrandom)"
+root4star -b -q -l 'starsim_gammagamma.C('"$nEvts"','"$myrandom"')' >& starsim.log
 
 echo "#################### Embedding BFC Chain #######################"
 starver SL10k_embed
