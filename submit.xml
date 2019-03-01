@@ -14,7 +14,7 @@
 
 	</command>
 
-	<output fromScratch="*.root *.fzd *.log *.metafile" toURL="file:__OUT__/" />
+	<output fromScratch="st_zerobias.*.root *.fzd *.log *.metafile" toURL="file:__OUT__/" />
 
 	<stdout URL="file:__CJOB__/job_$JOBID.out"/>
 	<stderr URL="file:__CJOB__/job_$JOBID.err"/>

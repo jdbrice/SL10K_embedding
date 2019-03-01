@@ -99,7 +99,7 @@ void bfcMixer_Tpx(Int_t Nevents=100,
   TString prodP10ihAuAu7("DbV20100821 P2010a,btof,BEmcChkStat,Corr4,OSpaceZ2,OGridLeak3D,VFMCE TpxClu -VFMinuit -hitfilt");
 
   // Run10 Au+Au 200 GeV chain
-  TString prodP10ikAuAu200("DbV20101213 P2010a pmdReco btof BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D VFMCE TpxClu -VFMinuit -hitfilt");
+  TString prodP10ikAuAu200("DbV20101213 P2010a pmdReco btofSim btof BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D VFMCE TpxClu -VFMinuit -hitfilt");
   
   // if you want this chain use the bfcVtx.C instead
   //TString prodP10ikAuAu200("DbV20101213 P2010a pmdReco btof BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D VFPPVnoCTB beamline TpxClu -VFMinuit -hitfilt");
